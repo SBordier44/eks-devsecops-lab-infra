@@ -29,4 +29,5 @@ id_dsa
 id_ecdsa
 id_ed25519
 *.key
-live/dev/provider.tf
+live/*/provider.tf
+live/*/backend.tf
