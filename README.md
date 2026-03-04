@@ -138,19 +138,19 @@ Required tools:
 
 Initialize the project:
 
-terragrunt run-all init
+terragrunt run --all init
 
 Preview infrastructure changes:
 
-terragrunt run-all plan
+terragrunt run --all plan
 
 Apply infrastructure:
 
-terragrunt run-all apply
+terragrunt run --all apply
 
 Destroy infrastructure:
 
-terragrunt run-all destroy
+terragrunt run --all destroy
 
 ---
 
