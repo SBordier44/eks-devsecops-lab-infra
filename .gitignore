@@ -1,0 +1,31 @@
+# Terraform / Terragrunt
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+.terraform.lock.hcl
+
+# Terragrunt cache
+**/.terragrunt-cache/*
+
+# TF vars potentially containing secrets
+*.tfvars
+*.tfvars.json
+
+# CLI / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets
+*.pem
+*.pki
+.env
+.env.*
+credentials
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.key
