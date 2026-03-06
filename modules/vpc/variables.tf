@@ -2,10 +2,6 @@ variable "name" {
   type = string
 }
 
-variable "region" {
-  type = string
-}
-
 variable "vpc_cidr" {
   type    = string
   default = "10.0.0.0/16"
@@ -31,6 +27,11 @@ variable "enable_nat_gateway" {
 }
 
 variable "enable_vpc_endpoints" {
+  type    = bool
+  default = true
+}
+
+variable "enable_s3_gateway_endpoint" {
   type    = bool
   default = true
 }

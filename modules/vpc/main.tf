@@ -79,11 +79,6 @@ module "vpc_endpoints" {
       service             = "ecr.dkr"
       private_dns_enabled = true
     }
-    s3 = {
-      service         = "s3"
-      service_type    = "Gateway"
-      route_table_ids = concat(module.vpc.private_route_table_ids, module.vpc.public_route_table_ids)
-    }
     sts = {
       service             = "sts"
       private_dns_enabled = true
@@ -91,6 +86,26 @@ module "vpc_endpoints" {
     logs = {
       service             = "logs"
       private_dns_enabled = true
+    }
+  }
+}
+
+module "s3_gateway_endpoint" {
+  count   = var.enable_s3_gateway_endpoint ? 1 : 0
+  source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
+  version = "~> 6.6"
+
+  vpc_id = module.vpc.vpc_id
+  tags   = var.tags
+
+  endpoints = {
+    s3 = {
+      service      = "s3"
+      service_type = "Gateway"
+      route_table_ids = concat(
+        module.vpc.private_route_table_ids,
+        module.vpc.public_route_table_ids
+      )
     }
   }
 }

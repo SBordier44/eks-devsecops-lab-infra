@@ -24,14 +24,18 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    default = {
-      name           = "main"
-      instance_types = var.node_instance_types
-      min_size       = var.node_min_size
-      max_size       = var.node_max_size
-      desired_size   = var.node_desired_size
-      ami_type       = "AL2023_x86_64_STANDARD"
-      tags           = var.tags
+    workers = {
+      name                     = "${var.name}-workers"
+      instance_types           = var.node_instance_types
+      min_size                 = var.node_min_size
+      max_size                 = var.node_max_size
+      desired_size             = var.node_desired_size
+      ami_type                 = "AL2023_x86_64_STANDARD"
+      iam_role_use_name_prefix = false
+      iam_role_name            = "${var.name}-workers"
+      tags = merge(var.tags, {
+        Name = "${var.name}-workers"
+      })
     }
   }
 
