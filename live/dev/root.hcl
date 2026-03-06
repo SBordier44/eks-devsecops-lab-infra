@@ -8,7 +8,7 @@ remote_state {
   backend = "s3"
   config = {
     bucket         = "eks-devsecops-lab-tf-state"
-    key            = "${local.project}/${local.env}/terraform.tfstate"
+    key            = "${local.project}/${local.env}/${path_relative_to_include()}/terraform.tfstate"
     region         = local.region
     dynamodb_table = "eks-devsecops-lab-tf-lock"
     encrypt        = true
