@@ -2,33 +2,34 @@
 
 Infrastructure repository for the **EKS DevSecOps Lab**.
 
-This project aims to build a **production-like Kubernetes platform on AWS** while applying **DevSecOps best practices**,
-with a strong focus on reproducibility, security, and cost control.
+This repository contains the **Infrastructure as Code (IaC)** used to
+provision a modern AWS-based Kubernetes platform for learning,
+experimentation, and portfolio purposes.
 
-This repository contains the **Infrastructure as Code (IaC)** used to provision the cloud infrastructure required for
-the lab.
+------------------------------------------------------------------------
 
----
+## Project Goals
 
-# Project Goals
-
-The goal of this lab is to design and operate a **secure Kubernetes platform** similar to what would be deployed in a
-real company environment.
+The goal of this lab is to design and operate a **production-like AWS
+EKS platform** while applying modern **DevSecOps** and **platform
+engineering** practices.
 
 Key goals:
 
 - Build a **production-like AWS EKS platform**
 - Apply **DevSecOps best practices**
 - Ensure **full infrastructure reproducibility**
-- Implement **secure supply chain principles**
 - Keep the infrastructure **cost-efficient**
 - Use the project as a **public technical portfolio**
+- Always use the **latest stable versions** of systems, tooling, and
+  documentation
 
----
+------------------------------------------------------------------------
 
-# Repository Scope
+## Repository Scope
 
-This repository is responsible for provisioning and managing the **AWS infrastructure layer**.
+This repository is responsible for provisioning and managing the **AWS
+infrastructure layer**.
 
 Managed resources include:
 
@@ -40,165 +41,174 @@ Managed resources include:
 - OIDC federation for GitHub Actions
 - Terraform remote state (S3 + DynamoDB)
 
-Application deployment is **not handled here**.
+Application deployment is **not handled here**. Applications are
+deployed using **GitOps** via the dedicated repository:
 
-Applications are deployed using **GitOps** via the dedicated repository:
+- `eks-devsecops-lab-gitops`
 
-eks-devsecops-lab-gitops
+------------------------------------------------------------------------
 
----
+## Current Architecture
 
-# Architecture (Phase 1)
+The current infrastructure design focuses on **simplicity, reliability,
+security, and cost control**.
 
-Initial infrastructure design focuses on simplicity, security, and cost optimization.
-
-Components:
+### Components currently managed
 
 - AWS VPC
-- Private subnets across multiple availability zones
+- Public and private subnets across multiple Availability Zones
+- One **NAT Gateway** for outbound internet access from private
+  workloads
+- One **S3 Gateway Endpoint** to reduce NAT traffic
 - Amazon EKS cluster
 - Managed node group
-- Amazon ECR registry
-- Terraform remote state backend
+- Terraform remote state backend (S3 + DynamoDB)
+
+### Later phases
 
 Later phases will introduce:
 
-- ArgoCD (GitOps deployment)
-- Kyverno policies
-- RBAC design
+- Amazon ECR
+- GitHub Actions OIDC federation
+- ArgoCD
+- Kyverno
+- RBAC
 - NetworkPolicies
 - External Secrets
-- Supply chain security (SBOM, image signing)
+- Supply chain security (SBOM, signing, scanning)
 
----
+------------------------------------------------------------------------
 
-# Cost Control Strategy
+## Cost Control Strategy
 
-Since this project runs on **limited AWS credits**, cost optimization is a key requirement.
+Since this project runs on **limited AWS credits**, cost optimization is
+a key requirement.
 
 Measures implemented:
 
-- No NAT Gateway in the initial phase
+- **Single NAT Gateway** instead of one NAT per AZ
+- **S3 Gateway Endpoint** to reduce NAT usage
 - Minimal node group sizing
 - Resources destroyed when not used
 - Mandatory tagging for all resources
-- Infrastructure is created only when needed
+- Infrastructure created only when needed
 
-Estimated cost target:
+------------------------------------------------------------------------
 
-< $2/day
-
----
-
-# Security Principles
+## Security Principles
 
 This project follows several **DevSecOps principles**:
 
-- No long-lived AWS credentials are stored in repositories
+- No long-lived AWS credentials stored in repositories
 - Authentication from CI via **OIDC federation**
 - Infrastructure managed only via **Terraform / Terragrunt**
 - Least privilege IAM policies
 - Encrypted Terraform state
-- Locked Terraform state using DynamoDB
+- Terraform state locking with DynamoDB
 - Public repositories with **no secrets**
 
----
+------------------------------------------------------------------------
 
-# Repository Structure
+## Repository Structure
 
+``` text
 eks-devsecops-lab-infra/
+├── modules/
+│   ├── vpc/
+│   ├── eks/
+│   └── ecr/
+└── live/
+    └── dev/
+        ├── root.hcl
+        ├── vpc/
+        │   └── terragrunt.hcl
+        ├── eks/
+        │   └── terragrunt.hcl
+        └── ecr/
+            └── terragrunt.hcl
+```
 
-modules/  
-Terraform modules
+------------------------------------------------------------------------
 
-live/  
-dev/  
-terragrunt.hcl  
-vpc/terragrunt.hcl  
-eks/terragrunt.hcl  
-ecr/terragrunt.hcl
-
-The repository follows a **Terragrunt environment structure** to keep infrastructure modular and maintainable.
-
----
-
-# Prerequisites
+## Prerequisites
 
 Required tools:
 
 - AWS CLI
 - Terraform or OpenTofu
 - Terragrunt
-- kubectl (later phases)
+- kubectl
 - Git
 
----
+------------------------------------------------------------------------
 
-# How to Use
+## How to Use
 
-Initialize the project:
+Initialize all stacks:
 
+``` bash
 terragrunt run --all init
+```
 
 Preview infrastructure changes:
 
+``` bash
 terragrunt run --all plan
+```
 
 Apply infrastructure:
 
+``` bash
 terragrunt run --all apply
+```
 
 Destroy infrastructure:
 
+``` bash
 terragrunt run --all destroy
+```
 
----
+------------------------------------------------------------------------
 
-# Naming Convention
+## Naming Convention
 
-All resources follow the same naming convention:
+Resources use **short, AWS-safe names** when necessary to avoid IAM and
+EKS naming limits.
 
-project-env-resource
+Examples:
 
-Example:
+- `eks-devsecops-lab-dev-vpc`
+- `eksdsl-dev`
+- `eksdsl-dev-workers`
 
-eks-devsecops-lab-dev-vpc  
-eks-devsecops-lab-dev-eks  
-eks-devsecops-lab-dev-ecr
+------------------------------------------------------------------------
 
----
-
-# AWS Resource Tags
+## AWS Resource Tags
 
 All resources are tagged using the following structure:
 
-Project = eks-devsecops-lab  
-Env = dev  
-Owner = sylvain  
-ManagedBy = terraform
+Project = eks-devsecops-lab Env = dev ManagedBy = terraform
 
----
+------------------------------------------------------------------------
 
-# Related Repositories
+## Related Repositories
 
-Infrastructure is only one part of the lab.
+### Application repository
 
-Application repository:
-
-eks-devsecops-lab-app
+`eks-devsecops-lab-app`
 
 Contains:
 
-- Demo application (Go)
+- demo application
 - Dockerfile
 - CI pipeline
-- Security scans
+- security scans
 - SBOM generation
-- Image signing
+- image signing
 
-GitOps repository:
+### GitOps repository
 
-eks-devsecops-lab-gitops
+`eks-devsecops-lab-gitops`
 
 Contains:
 
@@ -209,22 +219,22 @@ Contains:
 - RBAC configuration
 - Network policies
 
-Documentation repository:
+### Documentation repository
 
-eks-devsecops-lab-docs
+`eks-devsecops-lab-docs`
 
 Contains:
 
-- Architecture diagrams
-- Architecture Decision Records (ADR)
-- Security design documentation
-- Incident simulations
+- architecture diagrams
+- ADRs
+- security design documentation
+- incident simulations
 
----
+------------------------------------------------------------------------
 
-# Roadmap
+## Roadmap
 
-Phase 1 — Infrastructure Bootstrap
+### Phase 1 --- Infrastructure Bootstrap
 
 - Terraform state backend
 - VPC
@@ -232,28 +242,30 @@ Phase 1 — Infrastructure Bootstrap
 - Node groups
 - ECR
 
-Phase 2 — GitOps
+### Phase 2 --- GitOps
 
 - ArgoCD installation
 - GitOps deployment model
 
-Phase 3 — Supply Chain Security
+### Phase 3 --- Supply Chain Security
 
 - Trivy scanning
 - SBOM generation
 - Image signing with Cosign
 
-Phase 4 — Kubernetes Security
+### Phase 4 --- Kubernetes Security
 
 - Kyverno policies
-- RBAC design
+- RBAC
 - NetworkPolicies
 - Secret management
 
----
+------------------------------------------------------------------------
 
-# Disclaimer
+## Disclaimer
 
-This project is a **personal DevSecOps lab** used for experimentation, learning, and portfolio purposes.
+This project is a **personal DevSecOps lab** used for experimentation,
+learning, and portfolio purposes.
 
-It is designed to simulate **real-world consulting scenarios** and platform engineering practices.
+It is designed to simulate **real-world consulting scenarios** and
+platform engineering practices.
