@@ -24,13 +24,17 @@ inputs = {
   vpc_id                  = dependency.vpc.outputs.vpc_id
   private_subnet_ids      = dependency.vpc.outputs.private_subnet_ids
   kubernetes_version      = "1.35"
-  endpoint_public_access  = true
   endpoint_private_access = true
+
+  endpoint_public_access = true
+  # Override this from CLI or env when needed:
+  # export TF_VAR_endpoint_public_access_cidrs="[\"YOUR_PUBLIC_IP/32\"]"
   endpoint_public_access_cidrs = ["0.0.0.0/0"]
+
   node_instance_types = ["t3.small"]
-  node_min_size           = 1
-  node_max_size           = 2
-  node_desired_size       = 1
+  node_min_size     = 1
+  node_max_size     = 2
+  node_desired_size = 1
   tags = {
     Project   = local.project
     Env       = local.env
