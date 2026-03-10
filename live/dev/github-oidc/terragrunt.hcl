@@ -31,6 +31,7 @@ inputs = {
   app_repository_name   = "eks-devsecops-lab-app"
   infra_repository_name = "eks-devsecops-lab-infra"
   app_allowed_branch    = "main"
+  app_environment_name  = "production"
   infra_allowed_branch  = "main"
   ecr_repository_arn    = dependency.ecr.outputs.repository_arn
   max_session_duration  = 3600

@@ -3,7 +3,7 @@ locals {
   app_role_name   = "${local.name_prefix}-github-app"
   infra_role_name = "${local.name_prefix}-github-infra"
   github_oidc_url = "https://token.actions.githubusercontent.com"
-  app_sub         = "repo:${var.github_owner}/${var.app_repository_name}:ref:refs/heads/${var.app_allowed_branch}"
+  app_sub         = "repo:${var.github_owner}/${var.app_repository_name}:environment:${var.app_environment_name}"
   infra_sub       = "repo:${var.github_owner}/${var.infra_repository_name}:ref:refs/heads/${var.infra_allowed_branch}"
 }
 

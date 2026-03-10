@@ -23,12 +23,6 @@ variable "infra_repository_name" {
   type        = string
 }
 
-variable "app_allowed_branch" {
-  description = "Allowed Git branch for the app repository"
-  type        = string
-  default     = "main"
-}
-
 variable "infra_allowed_branch" {
   description = "Allowed Git branch for the infra repository"
   type        = string
@@ -50,4 +44,10 @@ variable "max_session_duration" {
   description = "Maximum session duration in seconds for GitHub assumed roles"
   type        = number
   default     = 3600
+}
+
+variable "app_environment_name" {
+  description = "GitHub environment name used by the app workflow"
+  type        = string
+  default     = "production"
 }
