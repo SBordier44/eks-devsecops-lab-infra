@@ -40,10 +40,10 @@ inputs = {
   # export TF_VAR_endpoint_public_access_cidrs="[\"YOUR_PUBLIC_IP/32\"]"
   endpoint_public_access_cidrs = ["0.0.0.0/0"]
 
-  node_instance_types = ["t3.small"]
-  node_min_size     = 1
+  node_instance_types = ["t3.medium"]
+  node_min_size     = 2
   node_max_size     = 2
-  node_desired_size = 1
+  node_desired_size = 2
   tags = {
     Project   = local.project
     Env       = local.env
