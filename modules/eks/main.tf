@@ -11,6 +11,10 @@ module "eks" {
   endpoint_public_access_cidrs             = var.endpoint_public_access_cidrs
   enable_cluster_creator_admin_permissions = true
   enable_irsa                              = true
+  cloudwatch_log_group_retention_in_days   = 1
+  cloudwatch_log_group_class               = "STANDARD"
+  enabled_log_types                        = []
+  create_cloudwatch_log_group              = false
 
   addons = {
     coredns    = {}
