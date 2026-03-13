@@ -32,6 +32,7 @@ module "vpc" {
     "kubernetes.io/role/internal-elb"               = "1"
     "kubernetes.io/cluster/${var.cluster_tag_name}" = "shared"
   })
+  map_public_ip_on_launch = true
   tags = var.tags
 }
 

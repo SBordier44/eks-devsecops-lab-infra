@@ -8,7 +8,7 @@ locals {
   region           = local.root.locals.region
   project          = local.root.locals.project
   name             = "${local.project}-${local.env}-vpc"
-  cluster_tag_name = "${local.project}-${local.env}"
+  cluster_tag_name = "eksdsl-${local.env}"
 }
 
 terraform {
